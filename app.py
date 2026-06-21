@@ -1,17 +1,17 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
+import streamlit as st
 from sklearn.linear_model import LinearRegression
 
-# --- 1. Synthesize Data & Train Model ---
+#Synthesizing Data & Training Model
 @st.cache_resource
 def get_trained_model():
     np.random.seed(42)
-    distance = np.random.uniform(1, 15, 200) 
+    distance = np.random.uniform(1, 15, 200) #geneating 200 random distances between 1 and 15 km
     rating = np.random.uniform(3.0, 5.0, 200) 
     rush_hour = np.random.choice([0, 1], 200) 
 
-    # Life-like delivery time simulation formula
+    #Delivery time formula for target Variable 'y'
     time = 10 + (4 * distance) - (2 * rating) + (20 * rush_hour) + np.random.normal(0, 3, 200)
 
     df = pd.DataFrame({
@@ -21,7 +21,7 @@ def get_trained_model():
         'time': time
     })
 
-    # Train our best model (Model 3 with traffic data)
+    # Train our best model using Linear Regression
     X = df[['distance', 'rating', 'rush_hour']]
     y = df['time']
     
@@ -32,13 +32,13 @@ def get_trained_model():
 # Load the model
 model = get_trained_model()
 
-# --- 2. Streamlit User Interface ---
+#Streamlit User Interface
 st.set_page_config(page_title="Delivery Predictor", page_icon="🛵")
 
 st.title("Delivery Time Predictor 🛵")
 st.write("A Machine Learning app to estimate delivery times using Linear Regression.")
 
-# Form for user inputs
+# Taking user input through a form.
 with st.form("prediction_form"):
     st.subheader("Enter Delivery Details")
     
@@ -49,7 +49,7 @@ with st.form("prediction_form"):
     # Form submit button
     submit_button = st.form_submit_button(label="Calculate Delivery Time")
 
-# --- 3. Run Prediction ---
+# Running prediction and displaying result
 if submit_button:
     # Convert text selection to binary numeric input (0 or 1)
     rush_hour_numeric = 1 if user_rush_hour == "Yes" else 0
